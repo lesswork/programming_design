@@ -3,9 +3,6 @@
 
 using namespace std;
 
-#define SPI_INTERFACE "SPI"
-#define UART_INTERFACE "UART"
-
 class MediumInterface
 {
 	public:
@@ -74,24 +71,20 @@ class SPIInterface : public MediumInterface
 		}
 };
 
+template <typename T>
 class Factory
 {
 	public :
-	MediumInterface* createInterface(const char *type)
+	MediumInterface* createInterface()
 	{
-		if(strcmp(type,"UART") == 0)
-			return new UARTInterface();
-		else if(strcmp(type,"SPI") == 0)
-			return new SPIInterface();
-		else
-			return NULL;
+		return new T();
 	}
 };
 
 int main(void)
 {
-	Factory *factory;
-	MediumInterface* stream =(MediumInterface *) factory->createInterface(SPI_INTERFACE);
+	Factory<UARTInterface> *factory;
+	MediumInterface* stream = factory->createInterface();
 	stream->transmit();
 	
 	return 0;
