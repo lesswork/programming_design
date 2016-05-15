@@ -1,6 +1,10 @@
 #include <iostream>
+#include <string.h>
 
 using namespace std;
+
+#define SPI_INTERFACE "SPI"
+#define UART_INTERFACE "UART"
 
 class MediumInterface
 {
@@ -9,9 +13,11 @@ class MediumInterface
 		{
 			cout << "cttor : MediumInterface()" << endl;
 		}
-		virtual int transmit() {cout << "transmit()" << endl; return 0; } //= 0;
-		virtual int receive() {cout << "receive()" << endl; return 0; } //= 0;
+		//virtual int transmit() {cout << "transmit()" << endl;} //= 0;
+		//virtual int receive() {cout << "receive()" << endl;} //= 0;
 		
+		virtual int transmit() = 0;
+		virtual int receive() = 0;
 		~MediumInterface()
 		{
 			cout << "~dttor : MediumInterface()" << endl;
@@ -68,14 +74,25 @@ class SPIInterface : public MediumInterface
 		}
 };
 
+class Factory
+{
+	public :
+	MediumInterface* createInterface(const char *type)
+	{
+		if(strcmp(type,"UART") == 0)
+			return new UARTInterface();
+		else if(strcmp(type,"SPI") == 0)
+			return new SPIInterface();
+		else
+			return NULL;
+	}
+};
+
 int main(void)
 {
-	UARTInterface UARTstream;
-	SPIInterface SPIstream;
-
-	MediumInterface *stream = &SPIstream;
+	Factory *factory;
+	MediumInterface* stream =(MediumInterface *) factory->createInterface(SPI_INTERFACE);
 	stream->transmit();
-	stream = &UARTstream;
-	stream->transmit();
+	
 	return 0;
 }
