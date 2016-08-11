@@ -32,7 +32,6 @@ private:
     pthread_t thread;
     pthread_attr_t attr;
     void* status;
-
     int thread_id;
 
 public:
@@ -40,7 +39,20 @@ public:
 	{
 		medium.push_back(p);
 	}
-
+	int unRegister(IInterface* p)
+	{
+		vector<IInterface *>::iterator it;
+		for(it = medium.begin() ; it != medium.end() ; ++it)
+		{
+				if(*it == p)
+				{
+					cout << "UnRegister" << endl;
+					medium.erase(it);
+					return 0;
+				}
+		}
+		return -1;
+	}
 	// Will call Notify when change done
 	void Change(int p)
 	{
@@ -53,7 +65,7 @@ public:
 			Notify_deleted();
 	}
 
-	// Called hen event changed
+	// Called event changed
 	// can check for some condition and then call Update funtions also.
 	void Notify_created()
 	{
@@ -151,13 +163,13 @@ int main()
 	bob.CreateThread();
 	cout << endl;
 
-	Bluetooth ajay;
-	Wifi vijay;
-	Bluetooth satish;
+	Bluetooth b1;
+	Wifi w1;
+	Bluetooth b2;
 
-	bob.Register(&ajay);
-	bob.Register(&vijay);
-	bob.Register(&satish);
+	bob.Register(&b1);
+	bob.Register(&w1);
+	bob.Register(&b2);
 	
 	// Notify all IInterface, call Update()
 	bob.Change(created);
@@ -165,6 +177,14 @@ int main()
 	bob.Change(modified);
 	cout << endl;
 	bob.Change(deleted);
+	cout << endl;
+
+	if(bob.unRegister(&b2) == -1)
+	{
+		cerr << "Object is not registered" << endl;
+	}
+
+	bob.Change(modified);
 	cout << endl;
 	return 0;
 }
