@@ -77,15 +77,17 @@ class Factory
 	public :
 	MediumInterface* createInterface()
 	{
+		cout << "createInterface()" << endl;
 		return new T();
 	}
 };
 
 int main(void)
 {
-	Factory<UARTInterface> *factory;
-	MediumInterface* stream = factory->createInterface();
+	Factory<UARTInterface> factory;
+	MediumInterface* stream = factory.createInterface();
 	stream->transmit();
-	
+	stream->receive();
+
 	return 0;
 }
